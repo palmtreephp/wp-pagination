@@ -29,6 +29,58 @@ class Pagination
     }
 
     /**
+     * @return \WP_Query
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
+     * @param \WP_Query $query
+     *
+     * @return Pagination
+     */
+    public function setQuery(\WP_Query $query)
+    {
+        $this->query = $query;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArgs()
+    {
+        return $this->args;
+    }
+
+    /**
+     * @param array $args
+     *
+     * @return Pagination
+     */
+    public function setArgs(array $args)
+    {
+        $this->args = $args;
+
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return Pagination
+     */
+    public function addArg($key, $value)
+    {
+        $this->args[$key] = $value;
+
+        return $this;
+    }
+
+    /**
      * Returns bootstrap HTML output for our links
      *
      * @return string
@@ -92,13 +144,5 @@ class Pagination
         ]);
 
         $this->links = paginate_links($args);
-    }
-
-    /**
-     * @return array
-     */
-    public function getArgs()
-    {
-        return $this->args;
     }
 }
