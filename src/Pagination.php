@@ -101,7 +101,7 @@ class Pagination
                 'type' => 'array',
             ]);
 
-            $this->links = paginate_links($args);
+            $this->links = paginate_links($args) ?? [];
         }
 
         return $this->links;
