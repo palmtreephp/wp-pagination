@@ -5,7 +5,7 @@ WordPress pagination component for Palmtree PHP
 Generates pagination for the main WP_Query or any query provided and outputs with Bootstrap v4 classes.
 
 ## Requirements
-* PHP >= 5.6
+* PHP >= 7.1
 
 ## Installation
 

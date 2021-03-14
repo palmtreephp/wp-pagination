@@ -1,20 +1,33 @@
 {
-  "name": "palmtree/wp-pagination",
-  "description": "WordPress Pagination component for Palmtree PHP",
-  "type": "library",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Andy Palmer",
-      "email": "andy@andypalmer.me",
-      "homepage": "https://andypalmer.me"
+    "name": "palmtree/wp-pagination",
+    "description": "WordPress Pagination component for Palmtree PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andy Palmer",
+            "email": "andy@andypalmer.me",
+            "homepage": "https://andypalmer.me"
+        }
+    ],
+    "require": {
+        "php": ">=7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Palmtree\\WordPress\\Pagination\\": "src"
+        }
+    },
+    "require-dev": {
+        "palmtree/php-cs-fixer-config": "^1.0.3",
+        "roots/wordpress": "^5.7"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Palmtree\\WordPress\\Pagination\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "wordpress-install-dir": "vendor/roots/wordpress"
     }
-  ],
-  "require": {
-  },
-  "autoload": {
-    "psr-4": {
-      "Palmtree\\WordPress\\Pagination\\": "src"
-    }
-  }
 }

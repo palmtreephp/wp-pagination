@@ -1,79 +1,54 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Palmtree\WordPress\Pagination;
 
 class Pagination
 {
-    protected $query;
-    protected $links;
-
-    protected $args = [
-        'show_all'  => true,
+    /** @var \WP_Query */
+    private $query;
+    /** @var array|null */
+    private $links;
+    /** @var array Args passed to paginate_links */
+    private $args = [
+        'show_all' => true,
         'prev_text' => '&laquo;',
         'next_text' => '&raquo;',
     ];
 
-    /**
-     * Pagination constructor.
-     *
-     * @param \WP_Query $query
-     * @param array     $args
-     */
-    public function __construct($query = null, $args = [])
+    public function __construct(?\WP_Query $query = null, array $args = [])
     {
-        $this->query = $query ? $query : $GLOBALS['wp_query'];
+        $this->query = $query ?? $GLOBALS['wp_query'];
 
         foreach ($args as $key => $value) {
             $this->args[$key] = $value;
         }
     }
 
-    /**
-     * @return \WP_Query
-     */
-    public function getQuery()
+    public function getQuery(): \WP_Query
     {
         return $this->query;
     }
 
-    /**
-     * @param \WP_Query $query
-     *
-     * @return Pagination
-     */
-    public function setQuery(\WP_Query $query)
+    public function setQuery(\WP_Query $query): self
     {
         $this->query = $query;
+
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getArgs()
+    public function getArgs(): array
     {
         return $this->args;
     }
 
-    /**
-     * @param array $args
-     *
-     * @return Pagination
-     */
-    public function setArgs(array $args)
+    public function setArgs(array $args): self
     {
         $this->args = $args;
 
         return $this;
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return Pagination
-     */
-    public function addArg($key, $value)
+    public function addArg(string $key, $value): self
     {
         $this->args[$key] = $value;
 
@@ -81,28 +56,26 @@ class Pagination
     }
 
     /**
-     * Returns bootstrap HTML output for our links
-     *
-     * @return string
+     * Returns bootstrap HTML output for our links.
      */
-    public function getHtml()
+    public function getHtml(): string
     {
         $links = $this->getLinks();
 
-        if (!$links) {
+        if (\count($links) === 0) {
             return '';
         }
 
         $output = '<nav aria-label="Page navigation">
 		          <ul class="pagination justify-content-center">';
 
-        $find    = ['page-numbers'];
+        $find = ['page-numbers'];
         $replace = ['page-link'];
 
         foreach ($links as $link) {
             $itemClass = 'page-item';
 
-            if (stripos($link, 'current') > -1) {
+            if (stripos($link, 'current') !== false) {
                 $itemClass .= ' active';
             }
 
@@ -115,34 +88,27 @@ class Pagination
         return $output;
     }
 
-    /**
-     * @return array
-     */
-    public function getLinks()
+    public function getLinks(): array
     {
-        if (!$this->links) {
-            $this->generateLinks();
+        if (!isset($this->links)) {
+            $paged = get_query_var('paged') ?: 1;
+
+            $args = array_replace($this->getArgs(), [
+                'base' => str_replace(\PHP_INT_MAX, '%#%', esc_url(get_pagenum_link(\PHP_INT_MAX))),
+                'format' => '?paged=%#%',
+                'current' => $paged,
+                'total' => $this->query->max_num_pages,
+                'type' => 'array',
+            ]);
+
+            $this->links = paginate_links($args);
         }
 
         return $this->links;
     }
 
-    /**
-     *
-     */
-    protected function generateLinks()
+    public function __toString(): string
     {
-        $paged = get_query_var('paged') ? get_query_var('paged') : 1;
-        $big   = 999999999; // need an unlikely integer
-
-        $args = array_replace($this->getArgs(), [
-            'base'    => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
-            'format'  => '?paged=%#%',
-            'current' => $paged,
-            'total'   => $this->query->max_num_pages,
-            'type'    => 'array',
-        ]);
-
-        $this->links = paginate_links($args);
+        return $this->getHtml();
     }
 }
