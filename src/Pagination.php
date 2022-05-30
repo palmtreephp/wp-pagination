@@ -94,7 +94,7 @@ class Pagination
             $paged = get_query_var('paged') ?: 1;
 
             $args = array_replace($this->getArgs(), [
-                'base' => str_replace(\PHP_INT_MAX, '%#%', esc_url(get_pagenum_link(\PHP_INT_MAX))),
+                'base' => str_replace((string)\PHP_INT_MAX, '%#%', esc_url(get_pagenum_link(\PHP_INT_MAX))),
                 'format' => '?paged=%#%',
                 'current' => $paged,
                 'total' => $this->query->max_num_pages,
